@@ -7,6 +7,12 @@
 The game this code works for is a 5-letter guessing game. You have 6 guesses to guess a random 5-letter English words. On each guess, letters of the guess are marked in one of three colors: green, yellow, or gray. Green indicates the letter is correct, yellow says that the letter is in the word but not in that place, and gray means that the letter is not in the word. If a letter only appears in a word once and you guess that letter twice in a word in two incorrect places, then only the first will be yellow and the second will be gray (if you guess the same letter 3 times but all are in the wrong place and the letter occurs in the word twice, then the first two occurences will be yellow and the third will be gray). Similarly, if you guess the same letter 3 times all in the incorrect place when the letter only occurs once, only the first occurence of the ltter will be yellow and the last two will be gray. You are to use these clues to narrow down your guesses to guess the word in the least amount of guesses. Feel free to use the code below to assist you and beat your friends in the daily Wordle.
 
 ---
+
+## The idea
+
+Worlde is one of the more popular games today. In order to impress my friends, I wrote this code so that I could better compete against them everyday in this game.
+
+---
 ## Pre-Game Instructions
 1. Copy the code below and place it in a Jupyter notebook.
 2. Navigated to word_tfidf.csv in this repository.
