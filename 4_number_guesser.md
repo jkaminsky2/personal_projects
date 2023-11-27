@@ -22,164 +22,97 @@ The game this code works for is a 4-digit number guessing game. Your objective i
 **Always guess** ***1234*** **to start**
 
 ## Code
+<pre>
+    import itertools
+import random
 
-    import requests
-    from bs4 import BeautifulSoup
-    import random
-    all_word = []
-    for i in range(1, 16):
-        if i == 1:
-            url = F'https://www.bestwordlist.com/5letterwords.htm'
-        else:
-            url = F'https://www.bestwordlist.com/5letterwordspage{i}.htm'
-        response = requests.get(url)
-        soup = BeautifulSoup(response.content, "html.parser")
+digits = "0123456789"
+length = 4
+combinations = list(itertools.permutations(digits, length))
 
-        table = soup.find('table')
-        words = []
-        if table:
-            rows = table.find_all('tr')
-            for row in rows:
-                columns = row.find_all('td')
-                for column in columns:
-                    word = column.text.strip()
-                    words.append(word)
-        if i == 1:
-            a = words[1][509:-506]
-            all_word += a.split()
-        elif i < 10:
-            a = words[1][517:-506]
-            if i < 4:
-                all_word += a.split()
-            elif i < 9:
-                a = a[:-5]
-                all_word += a.split()
-            else:
-                a = a[:-6]
-                all_word += a.split()
-        else:
-            a = words[1][518:-506]
-            if i < 11:
-                a = a[:-7]
-                all_word += a.split()
-            elif i < 13:
-                a = a[:-8]
-                all_word += a.split()
-            else:
-                a = a[:-3]
-                all_word += a.split()
-        print(a[:30], a[-30:])
-       
+def next_best_guess(combinations, last_try, correct, diff_position, total_correct):
+    if correct == 4:
+        return ('Correct Guess: ', last_try, correct)
     
-    def get_unique_letters(string):
-    unique_letters = []
-    for char in string:
-        if char not in unique_letters:
-            unique_letters.append(char)
-    return unique_letters
+    to_remove = correct + diff_position
+    filtered = []
+    for combination in combinations:
+        first = last_try[0] in combination
+        second = last_try[1] in combination
+        third = last_try[2] in combination
+        fourth = last_try[3] in combination
+        lst = [first, second, third, fourth]
+        
+        first_corr = last_try[0] == combination[0]
+        second_corr = last_try[1] == combination[1]
+        third_corr = last_try[2] == combination[2]
+        fourth_corr = last_try[3] == combination[3]
+        lst_corr = [first_corr, second_corr, third_corr, fourth_corr]
+        
+        if sum(lst) == to_remove and sum(lst_corr) == correct:
+            filtered.append(combination)
+    total_correct += to_remove
+    if last_try == ('1', '2', '3', '4'):
+        next_guess = ('5', '6', '7', '8')  
+    elif last_try == ('5', '6', '7', '8') and total_correct < 3:
+        combos09 = []
+        for combo in filtered:
+            if '0' in combo and '9' in combo:
+                combos09.append(combo)
+        next_guess = random.choice(combos09)
+    else:
+        next_guess = random.choice(filtered)
+    
+    if len(filtered) == 1:
+        print(F"This will be the correct guess: {next_guess}")
+    :
+        print(F"Guess this: {next_guess}")
+    
+    return next_guess, filtered, total_correct
 
-
-    def next_best_guess(combinations, last_try, correct, diff_position, count):
-        #if word is correct
-        if len(correct) == 5:
-            print(F'Correct Guess in {count} tries:', last_try)
-            return last_try, [], count
-        #next guess number
-        count += 1
-        #eliminate words without correct letters in correct places
-        filtered = []
-        for combination in combinations:
-            ct = 0
-            needed = len(correct)
-            for item in correct:
-                if last_try[int(item)] == combination[int(item)]:
-                    ct += 1
-            if ct == needed:
-                filtered.append(combination)
-        #scenario where guessed letter twice but only one in word or guessed three times and in word twice
-        filtered2 = []
-        dups = []
-        need = []
-        two_one = []
-        three_two = []
-        for it in range(5):
-            if str(it) not in correct and str(it) not in diff_position:
-                dups.append(it)
+def get_valid_input(message, lower_limit, upper_limit):
+    while True:
+        try:
+            value = int(input(message))
+            if lower_limit <= value <= upper_limit:
+                return value
             else:
-                need.append(it)
-        freq_dict = {}
-        for item in need:
-            if last_try[item] not in freq_dict:
-                freq_dict[last_try[item]] = 1
+                print(f"Invalid input. Please enter a value between {lower_limit} and {upper_limit}.")
+        except ValueError:
+            print("Invalid input. Please enter an integer.")
+            
+def get_valid_input2(message):
+    while True:
+        try:
+            value = tuple(input(message))
+            if int(value[0]) != int(value[1]) and int(value[0]) != int(value[2])\
+            and int(value[0]) != int(value[3]) and int(value[1]) != int(value[2])\
+            and int(value[1]) != int(value[3]) and int(value[2]) != int(value[3]) and len(value) == 4:
+                return value
             else:
-                freq_dict[last_try[item]] += 1
-        for item in dups:
-            if last_try[item] in freq_dict.keys():
-                if freq_dict[last_try[item]] > 1:
-                    three_two.append(item)
-                else:
-                    two_one.append(item)
-        if len(two_one) + len(three_two) == 0:
-            filtered2 = filtered
-        else:
-            for word in filtered:
-                curr = 1
-                for letter in two_one:
-                    if word.count(letter) == 1:
-                        if word.index(letter) in need:
-                            filtered2.append(word)
-                for letter in three_two:
-                    if word.count(letter) == 2:
-                        start_index = 0
-                        curr_ct = 0
-                        for _ in range(2):
-                            index = word.find(letter, start_index)
-                            if index in need:
-                                curr_ct += 1
-                            start_index = index + 1
-                        if curr_ct == 2:
-                            filtered2.append(word)      
-        #eliminate words with incorrect letters that aren't dupes        
-        filtered3 = []
-        look_for = []
-        for item in dups:
-            if item not in three_two and item not in two_one:
-                look_for.append(item)
+                print(f"Invalid input. Please enter 4 unique numbers between 0 and 9.")
+        except ValueError:
+            print("Invalid input. Please enter only integers with no spaces.")
 
-        for word in filtered2:
-            curr_ct = 0
-            to_comp = len(look_for)
-            for index in look_for:
-                if last_try[index] not in word:
-                    curr_ct += 1
-            if curr_ct == to_comp:
-                filtered3.append(word)
-        #eliminate words with correct letters in wrong spot
-        filtered4 = []
-        for word in filtered3:
-            ovr_count = 0
-            for position in diff_position:
-                if last_try[int(position)] != word[int(position)] and last_try[int(position)] in word:
-                    ovr_count += 1
-            if ovr_count == len(diff_position):
-                filtered4.append(word)
-        print(filtered4)
-        #scenario where guessed letter three times but only one/two in word
-        if last_try == 'serai' and len(correct) + len(diff_position) <= 3:
-            next_guess = 'donut'
-        else:
-            next_guess = random.choice(filtered4)
-            if len(get_unique_letters(next_guess)) <= 3 and len(correct) + len(diff_position) < 3:
-                while len(get_unique_letters(next_guess)) <= 3:
-                    next_guess = random.choice(filtered4)
+input_tuple = get_valid_input2("Enter a guess of 4 different digits: ")
 
-        if len(filtered2) == 1 and count == 6:
-            print(F"This will be the correct last guess: {next_guess}")
-        elif len(filtered2) == 1:
-            print(F"This will be the correct guess in {count} tries: {next_guess}")
-        elif count == 6:
-            print(F"This will be your last guess: {next_guess}")
-        else:
-            print(F"Guess this: {next_guess}")
+num_correct = get_valid_input("Enter the number of digits in correct position: ", 0, 4)
+diff_position = get_valid_input("Enter the number of digits correct but not in the right position: ", 0, 4)
 
-        return next_guess, filtered4, count
+total_correct = 0
+
+while True:
+    next_guess, result, total_correct = next_best_guess(combinations, input_tuple, num_correct, diff_position, total_correct)
+    
+    if next_guess == 'Correct Guess: ':
+        print(next_guess + "".join(result))
+        break
+    
+    combinations = result
+    input_tuple = next_guess
+    
+    num_correct = get_valid_input("Enter the number of digits in correct position: ", 0, 4)
+    diff_position = get_valid_input("Enter the number of digits correct but not in the right position: ", 0, 4)
+
+</pre>
+   
