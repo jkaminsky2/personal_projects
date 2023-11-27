@@ -8,6 +8,12 @@ The game this code works for is a 4-digit number guessing game. Your objective i
 
 ---
 
+## The Idea
+
+To feel prepared for the Wordle guesser, I wrote this code to become more familiar with this type of coding.
+
+---
+
 ## Instructions
 1. Go to the website above.
 2. Copy the code below in a new Jupyter Notebook.
