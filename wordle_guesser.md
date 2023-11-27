@@ -8,7 +8,7 @@ The game this code works for is a 5-letter guessing game. You have 6 guesses to 
 
 ---
 
-## The idea
+## The Idea
 
 Worlde is one of the more popular games today. In order to impress my friends, I wrote this code so that I could better compete against them everyday in this game.
 
