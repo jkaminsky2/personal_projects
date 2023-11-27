@@ -65,7 +65,7 @@ def next_best_guess(combinations, last_try, correct, diff_position, total_correc
     
     if len(filtered) == 1:
         print(F"This will be the correct guess: {next_guess}")
-    :
+    else:
         print(F"Guess this: {next_guess}")
     
     return next_guess, filtered, total_correct
