@@ -1,4 +1,4 @@
-# [Link to W Guessing Game](https://www.goobix.com/games/guess-the-number/)
+# [Link to 4-Number Guessing Game](https://www.goobix.com/games/guess-the-number/)
 
 ---
 
