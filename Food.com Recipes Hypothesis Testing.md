@@ -1,0 +1,1 @@
+My work regarding the food.com Recipes Hypothesis Testing can be found at [https://jkaminsky2.github.io/Recipe-Rating-Predictive-Model-Based-on-Food-Recipes-DataFrame/](https://jkaminsky2.github.io/Recipe-Rating-Predictive-Model-Based-on-Food-Recipes-DataFrame/).
