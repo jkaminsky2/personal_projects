@@ -1,4 +1,4 @@
-# [[Link to Wordle]([https://www.goobix.com/games/guess-the-number/)](https://www.nytimes.com/games/wordle/index.html)
+# [Link to Wordle](https://www.nytimes.com/games/wordle/index.html)
 
 ---
 
